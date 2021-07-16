@@ -1,5 +1,4 @@
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext('2d');
+const ctx = document.getElementById("canvas").getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
@@ -16,45 +15,36 @@ class Charge{
         if(B==0){
             this.r = 0;
         }else{
-            //this.r = (m*v)/(q*B);
-            this.r = 100;
+            this.r = (m*v)/(q*B);
         }
         
         this.ac = (q*v*B)/m;  //centripetal acceleration
         this.w = (q*B)/m;   //angular velocity
     }
 
-    // w (){
-    //     return this.v / this.r;
-    // }
-
-    // ax () { 
-    //     return this.a * Math.sin(this.w() * this.t)
-    // }
-    // ay () { 
-    //     return this.a * Math.cos(this.w() * this.t)
-    // }
     update(){
-        this.t += 1;
+        this.t += 0.016666;
         this.x += this.r*Math.sin(this.w * this.t);
         this.y += this.r*Math.cos(this.w * this.t);
     }
 
     draw() {
-        ctx.fillStyle="white";
+        ctx.strokeStyle="green";
+        ctx.fillStyle="blue";
         ctx.beginPath();
-        ctx.arc(this.x, this.y, 3, 0, Math.PI * 2 )
+        ctx.arc(this.x, this.y, this.m, 0, Math.PI * 2 );
+        ctx.moveTo(this.x,this.y);
+        ctx.lineTo(this.x,this.y);
         ctx.closePath();
         ctx.stroke();
     }
-
 }
 
-const charge = new Charge(20,2,100,300,25,2);
+const charge = new Charge(2,2,100,300,10,2);
 
 function animate(){
     ctx.fillStyle= 'rgba(255,255,255,0.8)';
-    ctx.fillRect(0,0,canvas.width,canvas.height);
+    //ctx.fillRect(0,0,canvas.width,canvas.height);
     charge.update();
     charge.draw();
     requestAnimationFrame(animate);
