@@ -1,62 +1,63 @@
-const canvas = document.querySelector("#canvas");
+const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-const charge = {
-    size: 1,
-    q: 1,
-    m: 2,
-     
-   
-    x : 0,
-    y : 100,
+class Charge{
+    constructor(q,m,x,y,v,B){
+        this.q = q;
+        this.m = m;
+        this.x = x;
+        this.y = y;
+        this.v = v;
+        this.B = B;
+        this.t = 0;
 
-    v: 25,
-    a:  5,
-    r: 25,
-    w (){
-        return this.v / this.r;
-    },
+        if(B==0){
+            this.r = 0;
+        }else{
+            //this.r = (m*v)/(q*B);
+            this.r = 100;
+        }
+        
+        this.ac = (q*v*B)/m;  //centripetal acceleration
+        this.w = (q*B)/m;   //angular velocity
+    }
 
-    t: 0,
-    
-    vx: 25,
-    vy: 0,
+    // w (){
+    //     return this.v / this.r;
+    // }
 
-    ax () { 
-        return this.a * Math.sin(this.w() * this.t)
-    },
-    ay () { 
-        return this.a * Math.cos(this.w() * this.t)
-    },
-    
+    // ax () { 
+    //     return this.a * Math.sin(this.w() * this.t)
+    // }
+    // ay () { 
+    //     return this.a * Math.cos(this.w() * this.t)
+    // }
     update(){
-        console.log(this);
-
-        this.t = this.t + 1;
-
-        this.x = this.x + this.vx;
-        this.y = this.y + this.vy;
-
-        this.vx = this.vx + this.ax();
-        this.vy = this.vy + this.ay();
-    },
+        this.t += 1;
+        this.x += this.r*Math.sin(this.w * this.t);
+        this.y += this.r*Math.cos(this.w * this.t);
+    }
 
     draw() {
-        ctx.fillStyle="black";
+        ctx.fillStyle="white";
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2 )
+        ctx.arc(this.x, this.y, 3, 0, Math.PI * 2 )
         ctx.closePath();
-        ctx.fill();
+        ctx.stroke();
     }
 
 }
 
+const charge = new Charge(20,2,100,300,25,2);
+
 function animate(){
-    charge.draw();
+    ctx.fillStyle= 'rgba(255,255,255,0.8)';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
     charge.update();
-    if (charge.x< 400 && charge.x > 0){
-    requestAnimationFrame(animate)
-}
+    charge.draw();
+    requestAnimationFrame(animate);
 }
 
 animate();
